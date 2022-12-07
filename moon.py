@@ -8,9 +8,7 @@ import time
 
 # Get current month and year
 current_time = list(map(lambda x: int(x), time.strftime("%m,%Y", time.localtime()).split(",")))
-if current_time[0] == 12:
-    current_time[0] = 0
-    current_time[1] += 1
+current_time[0] -= 1
 
 months_name = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOUT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DECEMBRE"]
 
@@ -52,6 +50,4 @@ def get_moon_info():
     
     return info
 
-with open("{}_{}.txt".format(months_name[current_time[0]], current_time[1]), "w") as file:
-   file.write(get_moon_info())
-   file.close()
+print(get_moon_info())

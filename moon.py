@@ -5,39 +5,33 @@
 # │ GNU General Public Licence v3.0+ │ #
 # └──────────────────────────────────┘ #
 from bs4 import BeautifulSoup
-import click
 import requests
 import time
 
 
+__name__ = "Moon Ephemeris"
+__version__ = "1.0.1"
+
+
+# ┌────────┐ #
+# │ Classe │ #
+# └────────┘ #
 class ConnectionError(Exception):
     pass
 
 
-@click.group()
-def cli():
-    pass
-
-
-@cli.command("ephemeris")
-@click.option("-m", "--month",
-    type=click.INT,
-    default=0,
-    help="month you wanted")
-@click.option("-o", "--output",
-    type=click.STRING,
-    default=None,
-    help="output file, if None the output will be print into the console")
-def ephemeris(month: int=0, output: str=None):
+# ┌──────────┐ #
+# │ Function │ #
+# └──────────┘ #
+def ephemeris(month: int=0):
     """
     Get the Moon's informatations for the given month and the current year
+    These informations will be save into a file MONTH-YYYY.txt
 
     Parameters
     ----------
     month : int
         Index of the month (1-12)
-    output : str
-        Name of the output file, if None, the informations will be print into the console
     """
     current_time = [month, int(time.strftime("%Y", time.localtime()))]
     if not month:
@@ -81,12 +75,17 @@ def ephemeris(month: int=0, output: str=None):
     
     info = info.replace("( ", "(").replace(" )", ")")
     
-    if output:
-        with open(output, "w") as file:
-            file.write(info)
-    else:
-        click.echo(info)
+    with open(f"{months_name[current_time[0]]}-{current_time[1]}.txt", "w") as file:
+        file.write(info)
 
 
-if __name__ == "__main__":
-    cli()
+# ┌─────────────┐ #
+# │ Auto-launch │ #
+# └─────────────┘ #
+print(f"{__name__} (Version {__version__})")
+month = input("Index of the month you want (1-12)\n(press [ENTER] to have the current one)\n> ")
+try: month = int(month)
+except ValueError: month = 0
+
+if not (1 <= month <= 12):
+    ephemeris(month)
